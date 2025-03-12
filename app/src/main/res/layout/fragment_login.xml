@@ -10,6 +10,7 @@
         android:id="@+id/loginProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
         android:visibility="gone"
         android:layout_gravity="center" />
 
@@ -43,7 +44,7 @@
             android:layout_marginBottom="16dp">
 
             <EditText
-                android:id="@+id/email_login_textView"
+                android:id="@+id/login_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/edit_text_background"
@@ -58,7 +59,7 @@
             android:layout_marginBottom="24dp">
 
             <EditText
-                android:id="@+id/password_login_editText"
+                android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/edit_text_background"
@@ -68,7 +69,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/login_login_button"
+            android:id="@+id/login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/green_button"
@@ -89,7 +90,7 @@
                 android:text="Don't have an account?" />
 
             <Button
-                android:id="@+id/login_sign_up_button"
+                android:id="@+id/sign_up_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="13dp"
