@@ -5,9 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
+<<<<<<< HEAD
 import com.hikespot.app.model.User
 import com.hikespot.app.repository.AuthRepository
 import com.hikespot.app.utils.UserManager
+=======
+import com.hikespot.app.repository.AuthRepository
+>>>>>>> 7739a9f829ca4d5bee54fc9ce8c4dcc9e616bd10
 import kotlinx.coroutines.launch
 
 class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
@@ -18,6 +22,7 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
+<<<<<<< HEAD
     private val _userLiveData = MutableLiveData<User?>()
     val userLiveData: LiveData<User?> get() = _userLiveData
 
@@ -34,6 +39,8 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         }
     }
 
+=======
+>>>>>>> 7739a9f829ca4d5bee54fc9ce8c4dcc9e616bd10
     // Sign Up
     fun signUp(username: String, email: String, password: String) {
         viewModelScope.launch {

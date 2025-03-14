@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+<<<<<<< HEAD
 import com.google.android.material.textfield.TextInputLayout
+=======
+>>>>>>> 7739a9f829ca4d5bee54fc9ce8c4dcc9e616bd10
 import com.hikespot.app.R
 import com.hikespot.app.databinding.FragmentSignUpBinding
 import com.hikespot.app.repository.AuthRepository
@@ -33,6 +36,46 @@ class SignUpFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentSignUpBinding.inflate(inflater, container, false)
        return binding.root
+<<<<<<< HEAD
+=======
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.loginButton.setOnClickListener {
+            findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+        }
+
+        binding.signUpButton.setOnClickListener {
+            val username = binding.signUpUsername.text.toString()
+            val email = binding.signUpEmail.text.toString()
+            val password = binding.signUpPassword.text.toString()
+
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty()){
+                Toast.makeText(requireActivity(),"All fields are required!", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                binding.signUpProgressBar.visibility = View.VISIBLE
+                binding.signUpButton.isEnabled = false
+                authViewModel.signUp(username,email,password)
+            }
+        }
+
+        authViewModel.authResult.observe(requireActivity()) { user ->
+            binding.signUpProgressBar.visibility = View.GONE
+            binding.signUpButton.isEnabled = true
+            if (user != null) {
+                Toast.makeText(requireActivity(), "Sign Up as ${user.email}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        authViewModel.error.observe(requireActivity()) { errorMsg ->
+            binding.signUpProgressBar.visibility = View.GONE
+            binding.signUpEmail.isEnabled = true
+            Toast.makeText(requireActivity(), "Error: $errorMsg", Toast.LENGTH_SHORT).show()
+        }
+>>>>>>> 7739a9f829ca4d5bee54fc9ce8c4dcc9e616bd10
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
