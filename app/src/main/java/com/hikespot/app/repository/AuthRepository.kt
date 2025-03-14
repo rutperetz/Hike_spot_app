@@ -4,10 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-<<<<<<< HEAD
 import com.hikespot.app.model.User
-=======
->>>>>>> 7739a9f829ca4d5bee54fc9ce8c4dcc9e616bd10
 import kotlinx.coroutines.tasks.await
 
 class AuthRepository {
@@ -37,14 +34,11 @@ class AuthRepository {
         return result.user
     }
 
-<<<<<<< HEAD
     suspend fun getUserDetails(uid: String): User? {
         val snapshot = firestore.collection("users").document(uid).get().await()
         return snapshot.toObject(User::class.java)
     }
 
-=======
->>>>>>> 7739a9f829ca4d5bee54fc9ce8c4dcc9e616bd10
     // Update Username
     suspend fun updateUsername(uid: String, newUsername: String) {
         firestore.collection("users").document(uid).update("username", newUsername).await()
