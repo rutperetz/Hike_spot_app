@@ -1,6 +1,9 @@
 package com.hikespot.app.view.fragments
 
+<<<<<<< HEAD
 import android.content.Intent
+=======
+>>>>>>> 5e2d23188b793fc41417b237edfa726052ee665f
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -12,13 +15,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+<<<<<<< HEAD
 import androidx.navigation.fragment.findNavController
+=======
+>>>>>>> 5e2d23188b793fc41417b237edfa726052ee665f
 import com.hikespot.app.R
 import com.hikespot.app.databinding.FragmentEditProfileBinding
 import com.hikespot.app.model.User
 import com.hikespot.app.repository.AuthRepository
 import com.hikespot.app.utils.UserManager
+<<<<<<< HEAD
 import com.hikespot.app.view.activities.MainActivity
+=======
+>>>>>>> 5e2d23188b793fc41417b237edfa726052ee665f
 import com.hikespot.app.viewmodel.AuthViewModel
 import com.squareup.picasso.Picasso
 
@@ -83,6 +92,7 @@ class EditProfileFragment : Fragment() {
                authViewModel.loadUser()
            },3000)
         }
+<<<<<<< HEAD
 
         binding.buttonLogout.setOnClickListener {
             authViewModel.logout()
@@ -92,6 +102,8 @@ class EditProfileFragment : Fragment() {
                 startActivity(intent)
             },2000)
         }
+=======
+>>>>>>> 5e2d23188b793fc41417b237edfa726052ee665f
     }
 
     private fun displayUserInfo(){

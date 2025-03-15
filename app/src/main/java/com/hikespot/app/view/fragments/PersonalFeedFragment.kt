@@ -28,6 +28,11 @@ class PersonalFeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+<<<<<<< HEAD
+=======
+        displayUserInfo()
+
+>>>>>>> 5e2d23188b793fc41417b237edfa726052ee665f
         binding.settingsProfileButton.setOnClickListener {
          findNavController().navigate(R.id.action_personal_feed_to_edit_profile)
         }
