@@ -84,4 +84,8 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     fun getCurrentUser(): FirebaseUser? {
         return authRepository.getCurrentUser()
     }
+
+    fun logout(){
+        authRepository.logout()
+    }
 }

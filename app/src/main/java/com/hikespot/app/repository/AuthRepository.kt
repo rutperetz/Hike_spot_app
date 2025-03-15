@@ -58,4 +58,8 @@ class AuthRepository {
         return auth.currentUser
     }
 
+    fun logout(){
+        auth.signOut()
+    }
+
 }
