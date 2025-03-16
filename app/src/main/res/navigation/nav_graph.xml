@@ -114,6 +114,6 @@
     </fragment>
     <fragment
         android:id="@+id/edit_post"
-        android:name="com.hikespot.app.view.fragments.FeedFragment"
+        android:name="com.hikespot.app.view.fragments.EditPostFragment"
         android:label="edit_post" />
 </navigation>

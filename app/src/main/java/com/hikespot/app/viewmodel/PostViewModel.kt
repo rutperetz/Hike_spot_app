@@ -10,7 +10,9 @@ import kotlinx.coroutines.launch
 class PostViewModel(private val repository: PostRepository) : ViewModel() {
 
     private val _posts = MutableLiveData<List<Post>?>()
+    private val _userPosts = MutableLiveData<List<Post>?>()
     val posts: LiveData<List<Post>?> get() = _posts
+    val userPosts: LiveData<List<Post>?> get() = _userPosts
 
     private val _operationResult = MutableLiveData<String?>()
     val operationResult: LiveData<String?> get() = _operationResult
@@ -53,7 +55,7 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
         viewModelScope.launch {
             repository.getPostsByUserId(userId) { posts, error ->
                 if (error == null) {
-                    _posts.postValue(posts)
+                    _userPosts.postValue(posts)
                 } else {
                     _operationResult.postValue(error)
                 }
