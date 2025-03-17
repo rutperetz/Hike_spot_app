@@ -62,7 +62,6 @@ class PersonalFeedFragment : Fragment() {
         }
 
         setUpRecyclerView()
-        getUserPosts()
     }
 
     private fun getUserPosts(){
@@ -88,7 +87,10 @@ class PersonalFeedFragment : Fragment() {
             }
 
             override fun onItemSettingClick(position: Int, post: Post) {
-
+                val bundle = Bundle().apply {
+                    putSerializable("post", post)
+                }
+                  findNavController().navigate(R.id.action_personal_feed_to_edit_post,bundle)
             }
 
         })
@@ -97,6 +99,7 @@ class PersonalFeedFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         displayUserInfo()
+        getUserPosts()
     }
 
     private fun displayUserInfo(){

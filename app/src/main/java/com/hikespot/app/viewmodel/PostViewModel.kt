@@ -27,9 +27,9 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
         }
     }
 
-    fun updatePost(post: Post, callback: PostCallback) {
+    fun updatePost(post: Post,imageUri: Uri?, callback: PostCallback) {
         viewModelScope.launch {
-            repository.updatePost(post, callback)
+            repository.updatePost(post,imageUri, callback)
         }
     }
 

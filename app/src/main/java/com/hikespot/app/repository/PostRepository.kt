@@ -1,8 +1,11 @@
 package com.hikespot.app.repository
 
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import com.hikespot.app.interfaces.PostCallback
 import com.hikespot.app.model.Post
 import com.hikespot.app.room.PostDao
@@ -51,19 +54,56 @@ class PostRepository(private val postDao: PostDao) {
         }
     }
 
-    suspend fun updatePost(post: Post, callback: PostCallback) {
+    suspend fun updatePost(post: Post, imageUri: Uri?, callback: PostCallback) {
         try {
-            postDao.updatePost(post)
-            postCollection.document(post.id).update(
-                "description", post.description,
-                "location", post.location,
-                "photoUrl", post.photoUrl
-            ).await()
+            if (imageUri != null) {
+                // Delete the previous image if it exists
+                post.photoUrl?.let { previousUrl ->
+                    deletePreviousImage(previousUrl)
+                }
+
+                // Upload the new image and update Firestore and local storage
+                val newPhotoUrl = uploadNewImage(post.id, imageUri)
+
+                // Update the post object with the new image URL
+                val updatedPost = post.copy(photoUrl = newPhotoUrl)
+                postDao.updatePost(updatedPost)
+                postCollection.document(post.id).set(updatedPost).await()
+            } else {
+                // No new image, just update text fields
+                postDao.updatePost(post)
+                postCollection.document(post.id).update(
+                    "description", post.description,
+                    "location", post.location,
+                    "photoUrl", post.photoUrl
+                ).await()
+            }
             callback.onSuccess("Post updated successfully!")
         } catch (e: Exception) {
             callback.onFailure("Failed to update post: ${e.message}")
         }
     }
+
+    private suspend fun deletePreviousImage(photoUrl: String) {
+        try {
+            val imageRef = Firebase.storage.getReferenceFromUrl(photoUrl)
+            imageRef.delete().await()
+        } catch (e: Exception) {
+            Log.e("FirebaseStorage", "Failed to delete previous image: ${e.message}")
+        }
+    }
+
+    private suspend fun uploadNewImage(postId: String, imageUri: Uri): String {
+        return try {
+            val imageRef = storageRef.child("posts/$postId.jpg")
+            imageRef.putFile(imageUri).await()
+            imageRef.downloadUrl.await().toString()
+        } catch (e: Exception) {
+            throw Exception("Image upload failed: ${e.message}")
+        }
+    }
+
+
 
     suspend fun deletePost(post: Post, callback: PostCallback) {
         try {
