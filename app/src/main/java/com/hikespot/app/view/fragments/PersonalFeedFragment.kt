@@ -34,11 +34,8 @@ class PersonalFeedFragment : Fragment() {
     private lateinit var repository: PostRepository
     private lateinit var viewModelFactory: PostViewModelFactory
     private lateinit var postViewModel: PostViewModel
-    private val weatherViewModel: WeatherViewModel by viewModels()
     private lateinit var adapter:PersonalPostAdapter
     private var user:User?=null
-    val apiKey = "e572674eea9c73a4e16cf8e04e675e9a" // Replace with your API key
-    val city = "Tel Aviv"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,7 +120,6 @@ class PersonalFeedFragment : Fragment() {
         super.onResume()
         displayUserInfo()
         getUserPosts()
-        displayWeatherDetails()
     }
 
     private fun displayUserInfo(){
@@ -141,19 +137,6 @@ class PersonalFeedFragment : Fragment() {
             }
             binding.username.text = user.username
         }
-    }
-
-    private fun displayWeatherDetails(){
-        weatherViewModel.fetchWeather(city, apiKey)
-        weatherViewModel.weatherData.observe(this, Observer { weather ->
-            weather?.let {
-                binding.weatherTextView.setTextColor(ContextCompat.getColor(requireActivity(),R.color.green))
-                binding.weatherTextView.text = "City: ${it.name}\nTemp: ${it.main.temp}°C\nHumidity: ${it.main.humidity}%\nDescription: ${it.weather[0].description}"
-            } ?: run {
-                binding.weatherTextView.setTextColor(ContextCompat.getColor(requireActivity(),R.color.red))
-                binding.weatherTextView.text = "Failed to load weather data, Check API KEY"
-            }
-        })
     }
 
 }

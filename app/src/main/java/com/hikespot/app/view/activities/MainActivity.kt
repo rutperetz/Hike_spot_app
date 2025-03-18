@@ -3,7 +3,11 @@ package com.hikespot.app.view.activities
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -11,12 +15,16 @@ import com.hikespot.app.R
 import com.hikespot.app.databinding.ActivityMainBinding
 import com.hikespot.app.repository.AuthRepository
 import com.hikespot.app.viewmodel.AuthViewModel
+import com.hikespot.app.viewmodel.WeatherViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var authViewModel: AuthViewModel
+    private val weatherViewModel: WeatherViewModel by viewModels()
+    val apiKey = "e572674eea9c73a4e16cf8e04e675e9a" // Replace with your API key
+    val city = "Tel Aviv"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +108,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        displayWeatherDetails()
+    }
+
+    private fun displayWeatherDetails(){
+        weatherViewModel.fetchWeather(city, apiKey)
+        weatherViewModel.weatherData.observe(this, Observer { weather ->
+            weather?.let {
+                binding.weatherTextView.setTextColor(ContextCompat.getColor(this@MainActivity,R.color.green))
+                binding.weatherTextView.text = "City: ${it.name} : Temp: ${it.main.temp}°C"
+            } ?: run {
+                binding.weatherTextView.setTextColor(ContextCompat.getColor(this@MainActivity,R.color.red))
+                binding.weatherTextView.text = "No Weather data, Check API KEY"
+            }
+        })
     }
 
     @Deprecated("Deprecated in Java")
