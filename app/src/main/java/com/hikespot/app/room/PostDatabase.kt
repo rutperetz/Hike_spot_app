@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.hikespot.app.model.Post
+import com.hikespot.app.utils.Converters
 
 @Database(entities = [Post::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class PostDatabase : RoomDatabase() {
     abstract fun postDao(): PostDao
 

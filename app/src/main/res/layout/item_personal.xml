@@ -63,18 +63,45 @@
             android:layout_height="wrap_content"
             android:padding="8dp">
 
-            <ImageButton
-                android:id="@+id/buttonLike_itemPersonal"
-                android:layout_width="33dp"
-                android:layout_height="33dp"
-                android:src="@drawable/like" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                >
+                <ImageButton
+                    android:id="@+id/buttonLike_itemPersonal"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@color/white"
+                    android:src="@drawable/like" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/liked_textview"
+                    />
+            </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/buttonDislike_itemPersonal"
-                android:layout_width="33dp"
-                android:layout_height="33dp"
-                android:layout_marginStart="12dp"
-                android:src="@drawable/dislike" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                >
+                <ImageButton
+                    android:id="@+id/buttonDislike_itemPersonal"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@color/white"
+                    android:src="@drawable/dislike" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/dis_liked_textview"
+                    />
+            </LinearLayout>
 
            <LinearLayout
                android:layout_width="0dp"

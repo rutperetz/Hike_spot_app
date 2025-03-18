@@ -1,6 +1,8 @@
 package com.hikespot.app.view.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,7 @@ import com.hikespot.app.adapters.PersonalPostAdapter
 import com.hikespot.app.adapters.PostAdapter
 import com.hikespot.app.databinding.FragmentFeedBinding
 import com.hikespot.app.model.Post
+import com.hikespot.app.model.User
 import com.hikespot.app.repository.PostRepository
 import com.hikespot.app.room.PostDatabase
 import com.hikespot.app.utils.UserManager
@@ -51,12 +54,16 @@ class FeedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setUpRecyclerView()
-        getPosts()
+        binding.loginProgressBar.visibility = View.VISIBLE
+        Handler(Looper.getMainLooper()).postDelayed({
+            getPosts()
+        },4000)
     }
 
     private fun getPosts(){
         postViewModel.fetchAllPosts()
         postViewModel.posts.observe(requireActivity()){list->
+            binding.loginProgressBar.visibility = View.GONE
             if (list!!.isNotEmpty()){
                 postsList.clear()
                 postsList.addAll(list)
@@ -74,6 +81,23 @@ class FeedFragment : Fragment() {
         adapter.setOnItemClickListener(object : PostAdapter.OnItemClickListener{
             override fun onItemClick(position: Int, post: Post) {
 
+            }
+
+            override fun onItemLikeClick(position: Int, post: Post) {
+               postViewModel.toggleLike(post.id,"${UserManager.getUser()?.id}"){updatedPost->
+                   postsList.removeAt(position)
+                   postsList.add(position,updatedPost!!)
+                   adapter.notifyItemChanged(position)
+               }
+
+            }
+
+            override fun onItemDisLikeClick(position: Int, post: Post) {
+                postViewModel.toggleDislike(post.id,"${UserManager.getUser()?.id}"){updatedPost->
+                    postsList.removeAt(position)
+                    postsList.add(position,updatedPost!!)
+                    adapter.notifyItemChanged(position)
+                }
             }
 
         })

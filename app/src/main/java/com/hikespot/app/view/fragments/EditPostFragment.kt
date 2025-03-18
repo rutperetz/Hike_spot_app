@@ -81,7 +81,7 @@ class EditPostFragment : Fragment() {
         }
 
         binding.postButton.setOnClickListener {
-            // Validate input
+
             if (binding.postEditText.text.isEmpty() && selectedImageUri == null) {
                 Toast.makeText(
                     requireContext(),
@@ -145,7 +145,7 @@ class EditPostFragment : Fragment() {
             builder.setMessage("Are you sure you want to delete this post?")
 
             builder.setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss() // Dismiss the dialog when "No" is clicked
+                dialog.dismiss()
             }
 
             builder.setPositiveButton("Yes") { dialog, _ ->

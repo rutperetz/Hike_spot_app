@@ -4,10 +4,12 @@ package com.hikespot.app.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.hikespot.app.R
 import com.hikespot.app.databinding.ItemFeedBinding
 import com.hikespot.app.model.Post
+import com.hikespot.app.utils.UserManager
 import com.squareup.picasso.Picasso
 
 class PostAdapter(private val posts: MutableList<Post>) :
@@ -15,6 +17,8 @@ class PostAdapter(private val posts: MutableList<Post>) :
 
     interface OnItemClickListener {
         fun onItemClick(position: Int, post: Post)
+        fun onItemLikeClick(position: Int, post: Post)
+        fun onItemDisLikeClick(position: Int, post: Post)
     }
 
     private var mListener: OnItemClickListener? = null
@@ -64,17 +68,38 @@ class PostAdapter(private val posts: MutableList<Post>) :
                         .centerCrop()
                         .into(imageViewPostItemPersonal)
                 }
-
+                val isLiked = post.likes.contains(UserManager.getUser()?.id)
+                val isDisliked = post.dislikes.contains(UserManager.getUser()?.id)
                 textViewDescriptionItemPersonal.text = post.description
+                if (isLiked){
+                  likedTextview.text = "Liked"
+                    likedTextview.setTextColor(ContextCompat.getColor(binding.root.context,R.color.green))
+                }
+                else{
+                    likedTextview.visibility = View.GONE
+                }
 
+                if (isDisliked){
+                   disLikedTextview.text = "DisLiked"
+                    disLikedTextview.setTextColor(ContextCompat.getColor(binding.root.context,R.color.red))
+                }
+                else{
+                    disLikedTextview.visibility = View.GONE
+                }
                 binding.root.setOnClickListener {
                     mListener.onItemClick(layoutPosition, post)
                 }
 
+                binding.buttonLikeItemPersonal.setOnClickListener {
+                    mListener.onItemLikeClick(layoutPosition,post)
+                }
+
+                binding.buttonDislikeItemPersonal.setOnClickListener {
+                    mListener.onItemDisLikeClick(layoutPosition,post)
+                }
+
             }
         }
-
     }
-
 
 }

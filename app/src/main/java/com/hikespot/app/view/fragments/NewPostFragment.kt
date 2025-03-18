@@ -74,7 +74,7 @@ class NewPostFragment : Fragment() {
         }
 
         binding.postButton.setOnClickListener {
-            // Validate input
+
             if (binding.postEditText.text.isEmpty() && selectedImageUri == null) {
                 Toast.makeText(requireContext(), "Please add text or image to your post", Toast.LENGTH_SHORT).show()
             }

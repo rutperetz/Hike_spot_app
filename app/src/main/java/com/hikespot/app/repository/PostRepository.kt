@@ -9,6 +9,9 @@ import com.google.firebase.storage.ktx.storage
 import com.hikespot.app.interfaces.PostCallback
 import com.hikespot.app.model.Post
 import com.hikespot.app.room.PostDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class PostRepository(private val postDao: PostDao) {
@@ -20,6 +23,66 @@ class PostRepository(private val postDao: PostDao) {
         return postCollection.document().id
     }
 
+    suspend fun syncPostsFromFirestore() {
+        postCollection.get().addOnSuccessListener { snapshot ->
+            val posts = snapshot.toObjects(Post::class.java)
+            CoroutineScope(Dispatchers.IO).launch {
+                postDao.insertPosts(posts)
+            }
+        }
+    }
+
+    fun toggleLike(postId: String, userId: String, onComplete: (Post?) -> Unit) {
+        val postRef = postCollection.document(postId)
+
+        firestore.runTransaction { transaction ->
+            val snapshot = transaction.get(postRef)
+            val post = snapshot.toObject(Post::class.java) ?: return@runTransaction null
+
+            if (post.likes.contains(userId)) {
+                post.likes.remove(userId)
+            } else {
+                post.likes.add(userId)
+                post.dislikes.remove(userId)
+            }
+
+            transaction.set(postRef, post)
+            return@runTransaction post
+        }.addOnSuccessListener { updatedPost ->
+            updatedPost?.let {
+                CoroutineScope(Dispatchers.IO).launch {
+                    postDao.updateLikesDislikes(it.id, it.getLikesString(), it.getDislikesString()) // Update Room
+                }
+            }
+            onComplete(updatedPost)
+        }
+    }
+
+    fun toggleDislike(postId: String, userId: String, onComplete: (Post?) -> Unit) {
+        val postRef = postCollection.document(postId)
+
+        firestore.runTransaction { transaction ->
+            val snapshot = transaction.get(postRef)
+            val post = snapshot.toObject(Post::class.java) ?: return@runTransaction null
+
+            if (post.dislikes.contains(userId)) {
+                post.dislikes.remove(userId)
+            } else {
+                post.dislikes.add(userId)
+                post.likes.remove(userId)
+            }
+
+            transaction.set(postRef, post)
+            return@runTransaction post
+        }.addOnSuccessListener { updatedPost ->
+            updatedPost?.let {
+                CoroutineScope(Dispatchers.IO).launch {
+                    postDao.updateLikesDislikes(it.id, it.getLikesString(), it.getDislikesString()) // Update Room
+                }
+            }
+            onComplete(updatedPost)
+        }
+    }
 
     suspend fun insertPost(post: Post, imageUri: Uri?, callback: PostCallback) {
         try {
@@ -57,20 +120,20 @@ class PostRepository(private val postDao: PostDao) {
     suspend fun updatePost(post: Post, imageUri: Uri?, callback: PostCallback) {
         try {
             if (imageUri != null) {
-                // Delete the previous image if it exists
+
                 post.photoUrl?.let { previousUrl ->
                     deletePreviousImage(previousUrl)
                 }
 
-                // Upload the new image and update Firestore and local storage
+
                 val newPhotoUrl = uploadNewImage(post.id, imageUri)
 
-                // Update the post object with the new image URL
+
                 val updatedPost = post.copy(photoUrl = newPhotoUrl)
                 postDao.updatePost(updatedPost)
                 postCollection.document(post.id).set(updatedPost).await()
             } else {
-                // No new image, just update text fields
+
                 postDao.updatePost(post)
                 postCollection.document(post.id).update(
                     "description", post.description,
@@ -127,6 +190,15 @@ class PostRepository(private val postDao: PostDao) {
     suspend fun getPostsByUserId(userId: String, callback: (List<Post>?, String?) -> Unit) {
         try {
             val posts = postDao.getPostsByUserId(userId)
+            callback(posts, null)
+        } catch (e: Exception) {
+            callback(null, "Failed to fetch posts by user: ${e.message}")
+        }
+    }
+
+    suspend fun getPostsByLocation(location: String, callback: (List<Post>?, String?) -> Unit) {
+        try {
+            val posts = postDao.getPostsByLocation(location)
             callback(posts, null)
         } catch (e: Exception) {
             callback(null, "Failed to fetch posts by user: ${e.message}")
